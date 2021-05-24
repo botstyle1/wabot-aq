@@ -364,6 +364,24 @@ module.exports = {
       }
     }
   },
+  async welcome({ m, participants }) {
+    let chat = global.DATABASE._data.chats[m.key.remoteJid]
+    if (!chat.welcome) return
+    for (let user of participants) {
+      let pp = './src/avatar_contact.png'
+      try {
+        pp = await this.getProfilePicture(user)
+      } catch (e) {
+      } finally {
+        let text = (chat.sWelcome || this.welcome || conn.welcome || 'Welcome, @user!').replace('@user', '@' + user.split('@')[0]).replace('@subject', this.getName(m.key.remoteJid))
+        this.sendFile(m.key.remoteJid, pp, 'pp.jpg', text, m, false, {
+          contextInfo: {
+            mentionedJid: [user]
+          }
+        })
+      }
+    }
+  },
   async participantsUpdate({ jid, participants, action }) {
     let chat = global.DATABASE._data.chats[jid] || {}
     let text = ''
