@@ -10,7 +10,7 @@ let handler = async (m, { conn, text }) => {
   throw stiker.toString()
 }
 handler.help = ['ttp <teks>']
-handler.tags = ['sticker']
+handler.tags = ['creator']
 handler.command = /^ttp$/i
 handler.owner = false
 handler.mods = false
