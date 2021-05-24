@@ -52,6 +52,8 @@ module.exports = {
             if (!isNumber(user.anjing)) user.anjing = 0
             if (!isNumber(user.anjinglastclaim)) user.anjinglastclaim = 0
 
+            if (!isNumber(user.warn)) user.warn = 0
+
             if (!isNumber(user.anakkucing)) user.anakkucing = 0
             if (!isNumber(user.anakkuda)) user.anakkuda = 0
             if (!isNumber(user.anakrubah)) user.anakrubah = 0
