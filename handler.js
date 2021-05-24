@@ -4,29 +4,41 @@ let { MessageType } = require('@adiwajshing/baileys')
 
 const isNumber = x => typeof x === 'number' && !isNaN(x)
 module.exports = {
-  async handler(m) {
+  async handler(chatUpdate) {
+    // console.log(chatUpdate)
+    if (!chatUpdate.hasNewMessage) return
+    if (!chatUpdate.messages && !chatUpdate.count) return
+    let m = chatUpdate.messages.all()[0]
     try {
-    	simple.smsg(this, m)
+      simple.smsg(this, m)
       m.exp = 0
       m.limit = false
       try {
-        let user
-        if (user = global.DATABASE._data.users[m.sender]) {
-            if (!isNumber(user.healt)) user.healt = 0
-            if (!isNumber(user.level)) user.level = 0
-            if (!isNumber(user.exp)) user.exp = 0
-            if (!isNumber(user.limit)) user.limit = 10
-            if (!isNumber(user.lastclaim)) user.lastclaim = 0
+        let user = global.DATABASE._data.users[m.sender]
+        if (typeof user !== 'object') global.DATABASE._data.users[m.sender] = {}
+        if (user) {
+          if (!isNumber(user.exp)) user.exp = 0
+          if (!isNumber(user.limit)) user.limit = 10
+          if (!isNumber(user.lastclaim)) user.lastclaim = 0
+          if (!'registered' in user) user.registered = false
+          if (!user.registered) {
+            if (!'name' in user) user.name = this.getName(m.sender)
+            if (!isNumber(user.age)) user.age = -1
+            if (!isNumber(user.regTime)) user.regTime = -1
+          }
+          if (!isNumber(user.afk)) user.afk = -1
+          if (!'afkReason' in user) user.afkReason = ''
+          if (!'banned' in user) user.banned = false
+          if (!isNumber(user.level)) user.level = 0
+          if (!isNumber(user.healt)) user.healt = 0
             if (!isNumber(user.money)) user.money = 0
-            
             if (!isNumber(user.diamond)) user.diamond = 0
-
+            if (!isNumber(user.iron)) user.iron = 0
             if (!isNumber(user.common)) user.common = 0
             if (!isNumber(user.uncommon)) user.uncommon = 0
             if (!isNumber(user.mythic)) user.mythic = 0
             if (!isNumber(user.legendary)) user.legendary = 0
             if (!isNumber(user.pet)) user.pet = 0
-        
             if (!isNumber(user.potion)) user.potion = 0
             if (!isNumber(user.sampah)) user.sampah = 0
             if (!isNumber(user.armor)) user.armor = 0
@@ -40,43 +52,53 @@ module.exports = {
             if (!isNumber(user.anjing)) user.anjing = 0
             if (!isNumber(user.anjinglastclaim)) user.anjinglastclaim = 0
 
-            if (!'Banneduser' in user) user.Banneduser = false
-            if (!'BannedReason' in user) user.BannedReason = ''
-            if (!isNumber(user.warn)) user.warn = 0
-
-            if (!isNumber(user.afk)) user.afk = -1
-            if (!'afkReason' in user) user.afkReason = ''
-        
             if (!isNumber(user.anakkucing)) user.anakkucing = 0
             if (!isNumber(user.anakkuda)) user.anakkuda = 0
             if (!isNumber(user.anakrubah)) user.anakrubah = 0
             if (!isNumber(user.anakanjing)) user.anakanjing = 0
             if (!isNumber(user.makananpet)) user.makananpet = 0
 
-            if (!isNumber(user.antispam)) user.antispam = 0
-            if (!isNumber(user.antispamlastclaim)) user.antispamlastclaim = 0
-
             if (!isNumber(user.kayu)) user.kayu = 0
             if (!isNumber(user.batu)) user.batu = 0
             if (!isNumber(user.string)) user.string = 0
             if (!isNumber(user.sword)) user.sword = 0
+            if (!isNumber(user.sworddurability)) user.sworddurability = 0
             if (!isNumber(user.pickaxe)) user.pickaxe = 0
+            if (!isNumber(user.pickaxedurability)) user.pickaxedurability = 0
             if (!isNumber(user.fishingrod)) user.fishingrod = 0
+            if (!isNumber(user.fishingroddurability)) user.fishingroddurability = 0
 
             if (!isNumber(user.lastadventure)) user.lastadventure = 0
             if (!isNumber(user.lastfishing)) user.lastfishing = 0
             if (!isNumber(user.lastdungeon)) user.lastdungeon = 0
             if (!isNumber(user.lastduel)) user.lastduel = 0
+            if (!isNumber(user.lastmining)) user.lastmining = 0
             if (!isNumber(user.lastweekly)) user.lastweekly = 0
             if (!isNumber(user.lastmonthly)) user.lastmontly = 0
+//males ngurusin :vv
+          if (!isNumber(user.Thunt)) user.Thunt = 0
+          if (!isNumber(user.area)) user.area = 1
+          if (!isNumber(user.max_area)) user.max_area = 1
+          if (!isNumber(user.attack)) user.attack = 1
+          if (!isNumber(user.defense)) user.defense = 1
+          if (!isNumber(user.max_hp)) user.max_healt = 100
+          if (!'autolevelup' in user) user.autolevelup = false
         } else global.DATABASE._data.users[m.sender] = {
-        healt: 100,
-        level: 0,
-        exp: 0,
-        limit: 10,
-        lastclaim: 0,
+          exp: 0,
+          limit: 10,
+          lastclaim: 0,
+          registered: false,
+          name: this.getName(m.sender),
+          age: -1,
+          regTime: -1,
+          afk: -1,
+          afkReason: '',
+          banned: false,
+          level: 0,
+          healt: 100,
         money: 0,
         diamond: 0,
+        iron: 0,
         common: 0,
         uncommon: 0,
         mythic: 0,
@@ -93,30 +115,29 @@ module.exports = {
         rubahlastclaim: 0,
         anjing: 0,
         anjinglastclaim: 0,
-        Banneduser: false,
-        BannedReason: '',
         warn: 0,
-        afk: -1,
-        afkReason: '',
         anakkucing: 0,
         anakkuda: 0,
         anakrubah: 0,
         anakanjing: 0,
         makananpet: 0,
-        antispam: 0,
-        antispamlastclaim: 0,
         kayu: 0,
         batu: 0,
         string: 0,
         sword: 0,
+        sworddurability: 0,
         pickaxe: 0,
+        pickaxedurability: 0,
         fishingrod: 0,
+        fishingroddurability: 0,
         lastadventure: 0,
         lastfishing: 0,
         lastdungeon: 0,
         lastduel: 0,
+        lastmining: 0,
         lastweekly: 0,
-        lastmonthly: 0
+        lastmonthly: 0,
+          autolevelup: false,
         }
 
         let chat = global.DATABASE._data.chats[m.chat]
@@ -143,8 +164,8 @@ module.exports = {
           sDemote: '',
           delete: true,
           antiLink: false,
-          antiToxic: true,
-          antiVirtex: true
+          antiToxic: false,
+          antiVirtex: true,
         }
       } catch (e) {
         console.error(e)
@@ -175,7 +196,6 @@ module.exports = {
       let bot = m.isGroup ? participants.find(u => u.jid == this.user.jid) : {} // Your Data
       let isAdmin = user.isAdmin || user.isSuperAdmin || false // Is User Admin?
       let isBotAdmin = bot.isAdmin || bot.isSuperAdmin || false // Are you Admin?
-      let DevMode = (global.DeveloperMode.toLowerCase() == 'true')
       for (let name in global.plugins) {
         let plugin = global.plugins[name]
         if (!plugin) continue
@@ -302,7 +322,6 @@ module.exports = {
               isOwner,
               isAdmin,
               isBotAdmin,
-              DevMode,
               isPrems,
               chatUpdate,
             })
@@ -361,24 +380,6 @@ module.exports = {
         require('./lib/print')(m, this)
       } catch (e) {
         console.log(m, m.quoted, e)
-      }
-    }
-  },
-  async welcome({ m, participants }) {
-    let chat = global.DATABASE._data.chats[m.key.remoteJid]
-    if (!chat.welcome) return
-    for (let user of participants) {
-      let pp = './src/avatar_contact.png'
-      try {
-        pp = await this.getProfilePicture(user)
-      } catch (e) {
-      } finally {
-        let text = (chat.sWelcome || this.welcome || conn.welcome || 'Welcome, @user!').replace('@user', '@' + user.split('@')[0]).replace('@subject', this.getName(m.key.remoteJid))
-        this.sendFile(m.key.remoteJid, pp, 'pp.jpg', text, m, false, {
-          contextInfo: {
-            mentionedJid: [user]
-          }
-        })
       }
     }
   },
