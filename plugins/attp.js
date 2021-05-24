@@ -7,7 +7,7 @@ let handler  = async (m, { conn, text }) => {
   else throw 'Uhm...Teksnya?'
 }
 handler.help = ['attp <teks>']
-handler.tags = ['sticker']
+handler.tags = ['creator']
 handler.command = /^attp$/i
 handler.owner = false
 handler.mods = false
